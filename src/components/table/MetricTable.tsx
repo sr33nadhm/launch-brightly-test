@@ -1,5 +1,5 @@
-import { Card, CardHeader, Typography, CardBody } from "@material-tailwind/react";
-import { ChevronDownIcon, ChevronUpDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
+import { Card, CardHeader, Typography, CardBody, Popover, PopoverHandler, PopoverContent, IconButton, Checkbox } from "@material-tailwind/react";
+import { ChevronDownIcon, ChevronUpDownIcon, ChevronUpIcon, FunnelIcon } from "@heroicons/react/24/outline";
 import { observer } from "mobx-react";
 import store from "store/metricStore";
 import dayjs from 'dayjs';
@@ -53,12 +53,37 @@ function MetricTable() {
                                         <Typography
                                             variant="small"
                                             color="blue-gray"
-                                            onClick={() => store.sortByColumn(head.value)}
                                             className="flex items-center justify-between gap-2 font-normal leading-none opacity-70"
                                         >
                                             {head.label}{" "}
-                                            {getSortIcon(store.sorting[head.value])}
+                                            <span onClick={() => store.sortByColumn(head.value)}>
+                                                {getSortIcon(store.sorting[head.value])}
+                                            </span>
+                                            {
+                                                head.value === "editions" &&
+                                                <Popover>
+                                                    <PopoverHandler onClick={console.log}>
+                                                        <IconButton variant="outlined">
+                                                            <FunnelIcon strokeWidth={2} className="h-4 w-4" />
+                                                        </IconButton>
+                                                    </PopoverHandler>
+                                                    <PopoverContent className="flex flex-col">
+                                                        {
+                                                            store.filters.map(filter =>
+                                                                <Checkbox
+                                                                    key={filter}
+                                                                    color="blue"
+                                                                    label={filter}
+                                                                    checked={store.filtering.includes(filter)}
+                                                                    onChange={() => store.filterByEdition(filter)}
+                                                                />
+                                                            )
+                                                        }
+                                                    </PopoverContent>
+                                                </Popover>
+                                            }
                                         </Typography>
+
                                     </th>
                                 ))}
                             </tr>

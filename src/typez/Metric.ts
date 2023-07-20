@@ -12,7 +12,7 @@ export type Edition = {
 }
 
 export type FeatureEditions = {
-    items: [Edition];
+    items: Edition[];
 }
 
 export type Screenshot = {
@@ -21,7 +21,7 @@ export type Screenshot = {
 }
 
 type Screenshots = {
-    items: [Screenshot];
+    items: Screenshot[];
 }
 
 export type MetricResponse = {
@@ -33,6 +33,6 @@ export type MetricResponse = {
 
 export type MetricDTO = {
     features: {
-        items: [MetricResponse];
+        items: MetricResponse[];
     }
 }

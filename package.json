@@ -2,6 +2,7 @@
   "name": "launch-brightly-test",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://launchbrightly-test.com.s3-website.ap-south-1.amazonaws.com",
   "dependencies": {
     "@heroicons/react": "^2.0.18",
     "@material-tailwind/react": "^2.0.6",

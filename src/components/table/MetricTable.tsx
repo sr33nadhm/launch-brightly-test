@@ -52,18 +52,18 @@ function MetricTable() {
                         :
                         <table className="mt-4 w-full min-w-full table-fixed text-left">
                             <thead>
-                                <tr className="border-y-blue-100 border-y-2">
+                                <tr className="border-y-blue-800 border-y-2">
                                     {TABLE_HEAD.map((head, index) => (
                                         <th
                                             key={index}
                                             className={
-                                                `border-y border-blue-gray-100 bg-blue-gray-50/50 px-4 py-2 transition-colors hover:bg-blue-gray-50/20 ${head.value}-col`
+                                                `border-y border-blue-gray-100 bg-white px-4 py-2 transition-colors hover:bg-blue-gray-50/20 ${head.value}-col`
                                             }
                                         >
                                             <Typography
                                                 variant="small"
                                                 color="blue-gray"
-                                                className="flex items-center justify-between gap-2 font-medium leading-none opacity-70"
+                                                className="flex items-center justify-between gap-2 font-medium leading-none"
                                             >
                                                 {head.label}{" "}
                                                 <span>
@@ -100,7 +100,7 @@ function MetricTable() {
                                     ))}
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody className="opacity-90">
                                 {TABLE_ROWS.map(({ name, description, editions, timeOfScreenshot }, index) => {
                                     const isLast = index === TABLE_ROWS.length - 1;
                                     const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50 min-w-max";
@@ -121,7 +121,7 @@ function MetricTable() {
                                                     <Typography
                                                         variant="small"
                                                         color="blue-gray"
-                                                        className="font-normal opacity-70"
+                                                        className="font-normal"
                                                     >
                                                         {description}
                                                     </Typography>

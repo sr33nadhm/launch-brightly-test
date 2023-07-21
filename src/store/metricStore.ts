@@ -21,7 +21,7 @@ class MetricStore {
      * Adding an extra property to save the original order.
      * */
     originalMetrics: Metric[] = [];
-    filters: string[] = [];
+    filtersForUI: string[] = [];
     filtering: string[] = [];
     processing: boolean = true;
     sorting: StringMapEntry = {
@@ -35,13 +35,17 @@ class MetricStore {
         makeAutoObservable(this);
     }
 
+    getSortingCriteria() {
+        return Object.keys(this.sorting).filter((key: string) => this.sorting[key] !== "None");
+    }
+
     setAllMetrics(metrics: Metric[]) {
         this.allMetrics = metrics;
         this.originalMetrics = metrics;
         this.processing = false;
         metrics.forEach(item => {
-            if (!this.filters.includes(item.editions)) {
-                this.filters.push(item.editions)
+            if (!this.filtersForUI.includes(item.editions)) {
+                this.filtersForUI.push(item.editions)
             }
         });
     }
@@ -50,30 +54,39 @@ class MetricStore {
         this.processing = flag;
     }
 
+    sortMetrics(newSort: StringMapEntry, metrics: Metric[]) {
+        this.sorting = { ...newSort };
+        const sortingRules = this.getSortingCriteria()
+            .map(key => {
+                return newSort[key] === "DESC" ? "-" + key : key;
+            });
+        // If there is any sorting criteria, sort the given metrics
+        if (sortingRules.length > 0) {
+            return metrics.sort(fieldSorter(sortingRules));
+        }
+        // Else filter the original metrics and return
+        else {
+            return this.filterMetrics(this.filtering, [...this.originalMetrics]);
+        }
+    }
+
+    filterMetrics(filters: string[], metrics: Metric[]) {
+        // If there is any filter present, filter as per criteria
+        if (filters.length > 0) {
+            return metrics.filter(item => filters.includes(item.editions));
+        }
+        // Or else return the input as it is
+        else return metrics;
+    }
+
     sortByColumn(column: string) {
         this.processing = true;
         const newSort = { ...this.sorting };
         if (column in this.sorting) {
             newSort[column] = sortList[(sortList.indexOf(this.sorting[column]) + 1) % 3];
-            let unfilteredMetrics = this.sortMetrics(newSort, this.allMetrics);
-            this.allMetrics = this.filterMetrics(this.filtering, unfilteredMetrics);
+            this.allMetrics = this.sortMetrics(newSort, this.allMetrics);
         }
         this.processing = false;
-    }
-
-    sortMetrics(newSort: StringMapEntry, metrics: Metric[]) {
-        this.sorting = { ...newSort };
-        const sortingRules = Object.keys(newSort)
-            .filter(key => newSort[key] !== "None")
-            .map(key => {
-                return newSort[key] === "DESC" ? "-" + key : key;
-            });
-        if (sortingRules.length > 0) {
-            return metrics.sort(fieldSorter(sortingRules));
-        }
-        else {
-            return metrics;
-        }
     }
 
     filterByEdition(filter: string) {
@@ -86,21 +99,15 @@ class MetricStore {
             newFilters = newFilters.filter(item => item !== filter);
         }
         this.filtering = newFilters;
-        if (newFilters.length > 0) {
-            let unsortedMetrics = this.filterMetrics(newFilters, metrics);
-            this.allMetrics = this.sortMetrics(this.sorting, unsortedMetrics);
+        metrics = this.filterMetrics(newFilters, metrics);
+        if (this.getSortingCriteria().length > 0) {
+            this.allMetrics = this.sortMetrics(this.sorting, metrics);
         }
         else {
-            this.allMetrics = this.sortMetrics(this.sorting, metrics);
+            this.allMetrics = metrics;
         }
     }
 
-    filterMetrics(filters: string[], metrics: Metric[]) {
-        if (filters.length > 0) {
-            return metrics.filter(item => filters.includes(item.editions));
-        }
-        else return metrics;
-    }
 }
 
 const store = new MetricStore();

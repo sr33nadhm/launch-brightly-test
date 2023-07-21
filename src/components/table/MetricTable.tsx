@@ -1,5 +1,5 @@
 import { Card, CardHeader, Typography, CardBody, Popover, PopoverHandler, PopoverContent, IconButton, Checkbox } from "@material-tailwind/react";
-import { ChevronDownIcon, ChevronUpDownIcon, ChevronUpIcon, FunnelIcon } from "@heroicons/react/24/outline";
+import { ChevronDownIcon, ChevronUpDownIcon, ChevronUpIcon, FunnelIcon, PresentationChartBarIcon } from "@heroicons/react/24/outline";
 import { observer } from "mobx-react";
 import store from "store/metricStore";
 import dayjs from 'dayjs';
@@ -21,20 +21,23 @@ function MetricTable() {
             case 'DESC':
                 return <ChevronDownIcon strokeWidth={2} className="h-4 w-4" />
             default:
-                return <ChevronUpDownIcon strokeWidth={2} className="h-4 w-4" />
+                return <ChevronUpDownIcon strokeWidth={1} className="h-6 w-8" />
         }
     };
 
     return (
         <Card className="h-full w-auto">
             <CardHeader floated={false} shadow={false} className="rounded-none">
-                <div className="mb-0 flex items-center justify-between gap-8">
+                <div className="mb-0 flex items-center gap-6">
                     <div>
-                        <Typography variant="h5" color="blue-gray">
-                            Metrics list
+                        <PresentationChartBarIcon strokeWidth={1} className="h-8 w-12 text-blue-500" />
+                    </div>
+                    <div>
+                        <Typography variant="h5" className="mt-1 mb-2 font-thin text-gray-600">
+                            Metrics Dashboard
                         </Typography>
-                        <Typography color="gray" className="mt-1 font-normal">
-                            See information about all the metrics
+                        <Typography className="my-1 font-light text-gray-900/50 text-sm">
+                            Here are the metrics captured for the past 30 days. You can always change the retention period in your settings.
                         </Typography>
                     </div>
                 </div>
@@ -42,13 +45,15 @@ function MetricTable() {
             {
                 !store.processing &&
                 <CardBody className="py-0 px-0">
-                    <table className="mt-4 w-full min-w-max table-auto text-left">
+                    <table className="mt-4 w-full min-w-full table-fixed text-left">
                         <thead>
                             <tr>
                                 {TABLE_HEAD.map((head, index) => (
                                     <th
                                         key={index}
-                                        className="cursor-pointer border-y border-blue-gray-100 bg-blue-gray-50/40 p-4 transition-colors hover:bg-blue-gray-50"
+                                        className={
+                                            `border-y border-blue-gray-100 bg-blue-gray-50/40 p-4 transition-colors hover:bg-blue-gray-50 ${head.value}-col`
+                                        }
                                     >
                                         <Typography
                                             variant="small"
@@ -56,32 +61,34 @@ function MetricTable() {
                                             className="flex items-center justify-between gap-2 font-normal leading-none opacity-70"
                                         >
                                             {head.label}{" "}
-                                            <span onClick={() => store.sortByColumn(head.value)}>
-                                                {getSortIcon(store.sorting[head.value])}
+                                            <span>
+                                                {
+                                                    head.value === "editions" &&
+                                                    <Popover>
+                                                        <PopoverHandler>
+                                                            <IconButton variant="text" className="mr-1">
+                                                                <FunnelIcon strokeWidth={2} className="h-4 w-4" />
+                                                            </IconButton>
+                                                        </PopoverHandler>
+                                                        <PopoverContent className="flex flex-col">
+                                                            {
+                                                                store.filtersForUI.map(filter =>
+                                                                    <Checkbox
+                                                                        key={filter}
+                                                                        color="blue"
+                                                                        label={filter}
+                                                                        checked={store.filtering.includes(filter)}
+                                                                        onChange={() => store.filterByEdition(filter)}
+                                                                    />
+                                                                )
+                                                            }
+                                                        </PopoverContent>
+                                                    </Popover>
+                                                }
+                                                <IconButton variant="text" onClick={() => store.sortByColumn(head.value)}>
+                                                    {getSortIcon(store.sorting[head.value])}
+                                                </IconButton>
                                             </span>
-                                            {
-                                                head.value === "editions" &&
-                                                <Popover>
-                                                    <PopoverHandler onClick={console.log}>
-                                                        <IconButton variant="outlined">
-                                                            <FunnelIcon strokeWidth={2} className="h-4 w-4" />
-                                                        </IconButton>
-                                                    </PopoverHandler>
-                                                    <PopoverContent className="flex flex-col">
-                                                        {
-                                                            store.filters.map(filter =>
-                                                                <Checkbox
-                                                                    key={filter}
-                                                                    color="blue"
-                                                                    label={filter}
-                                                                    checked={store.filtering.includes(filter)}
-                                                                    onChange={() => store.filterByEdition(filter)}
-                                                                />
-                                                            )
-                                                        }
-                                                    </PopoverContent>
-                                                </Popover>
-                                            }
                                         </Typography>
 
                                     </th>
@@ -91,10 +98,10 @@ function MetricTable() {
                         <tbody>
                             {TABLE_ROWS.map(({ name, description, editions, timeOfScreenshot }, index) => {
                                 const isLast = index === TABLE_ROWS.length - 1;
-                                const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
+                                const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50 min-w-max";
                                 return (
                                     <tr key={index}>
-                                        <td className={classes}>
+                                        <td className={classes + " name-col"}>
                                             <div className="flex items-center gap-3">
                                                 <div className="flex flex-col">
                                                     <Typography variant="small" color="blue-gray" className="font-normal">
@@ -105,7 +112,7 @@ function MetricTable() {
                                         </td>
 
                                         <td className={classes}>
-                                            <div className="w-max flex flex-col description-col">
+                                            <div className="flex flex-col">
                                                 <Typography
                                                     variant="small"
                                                     color="blue-gray"
@@ -126,7 +133,7 @@ function MetricTable() {
 
                                         <td className={classes}>
                                             <Typography variant="small" color="blue-gray" className="font-normal">
-                                                {dayjs(timeOfScreenshot).format('hh:mm a, DD/MMM/YYYY')}
+                                                {dayjs(timeOfScreenshot).format('hh:mm a - MMM DD, YYYY')}
                                             </Typography>
                                         </td>
 

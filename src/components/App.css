@@ -16,13 +16,33 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: rgba(0, 0, 0, 0.03);
+  padding: 25px 0;
 }
 
-.app{
+.app {
   max-width: 90vw;
-  margin: 25px auto;
+  margin: 0 auto;
 }
 
-.description-col{
-  max-width: 500px;
+
+
+@media screen and (min-width : 980px) {
+  .description-col {
+    width: 30vw;
+  }
+
+  .timeOfScreenshot-col {
+    width: 201px;
+  }
+
+  .name-col {
+    padding-left: 30px;
+  }
+}
+
+@media screen and (min-width : 1045px) {
+  .description-col {
+    width: 40vw;
+  }
 }

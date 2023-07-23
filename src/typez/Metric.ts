@@ -3,6 +3,7 @@ export type Metric = {
     description: string;
     editions: string;
     timeOfScreenshot: string;
+    allScreenshots: string;
 }
 
 export type Edition = {
@@ -18,6 +19,7 @@ export type FeatureEditions = {
 export type Screenshot = {
     timeOfCapture: string;
     status: string;
+    mode: string;
 }
 
 type Screenshots = {

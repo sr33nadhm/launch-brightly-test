@@ -3,6 +3,7 @@ import { ChevronDownIcon, ChevronUpDownIcon, ChevronUpIcon, FunnelIcon, Presenta
 import { observer } from "mobx-react";
 import store from "store/metricStore";
 import dayjs from 'dayjs';
+import { Metric } from "typez/Metric";
 
 function MetricTable() {
     const TABLE_HEAD = [
@@ -25,12 +26,17 @@ function MetricTable() {
         }
     };
 
+    const handleRowClick = (metric: Metric) => {
+        store.setCurrentMetric(metric);
+        store.setShowModal(true);
+    }
+
     return (
         <Card className="h-full w-auto">
             <CardHeader floated={false} shadow={false} className="rounded-none">
                 <div className="mb-0 flex items-center gap-6">
                     <div>
-                        <PresentationChartBarIcon strokeWidth={1} className="h-8 w-12 text-blue-500" />
+                        <PresentationChartBarIcon strokeWidth={1} className="h-8 w-12 text-blue-600" />
                     </div>
                     <div>
                         <Typography variant="h5" className="mt-1 mb-2 font-thin text-gray-600">
@@ -101,48 +107,36 @@ function MetricTable() {
                                 </tr>
                             </thead>
                             <tbody className="opacity-90">
-                                {TABLE_ROWS.map(({ name, description, editions, timeOfScreenshot }, index) => {
+                                {TABLE_ROWS.map((metric, index) => {
                                     const isLast = index === TABLE_ROWS.length - 1;
-                                    const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50 min-w-max";
+                                    const rowClass = "cursor-pointer hover:bg-blue-gray-100/60 hover:text-blue-800";
+                                    const baseClass = "p-4 min-w-max"
+                                    const classes = isLast ? baseClass : baseClass + " border-b border-blue-gray-50";
                                     return (
-                                        <tr key={index}>
-                                            <td className={classes + " name-col"}>
-                                                <div className="flex items-center gap-3">
-                                                    <div className="flex flex-col">
-                                                        <Typography variant="small" color="blue-gray" className="font-normal">
-                                                            {name}
-                                                        </Typography>
-                                                    </div>
-                                                </div>
-                                            </td>
-
-                                            <td className={classes}>
-                                                <div className="flex flex-col">
-                                                    <Typography
-                                                        variant="small"
-                                                        color="blue-gray"
-                                                        className="font-normal"
-                                                    >
-                                                        {description}
-                                                    </Typography>
-                                                </div>
-                                            </td>
-
-                                            <td className={classes}>
-                                                <div className="flex flex-col">
-                                                    <Typography variant="small" color="blue-gray" className="font-normal">
-                                                        {editions}
-                                                    </Typography>
-                                                </div>
-                                            </td>
-
-                                            <td className={classes}>
-                                                <Typography variant="small" color="blue-gray" className="font-normal">
-                                                    {dayjs(timeOfScreenshot).format('hh:mm a - MMM DD, YYYY')}
+                                        <tr className={rowClass} key={index} onClick={() => handleRowClick(metric)}>
+                                            <td className={classes + "name-col"}>
+                                                <Typography variant="small" className="font-normal">
+                                                    {metric.name}
                                                 </Typography>
                                             </td>
 
+                                            <td className={classes}>
+                                                <Typography variant="small" className="font-normal">
+                                                    {metric.description}
+                                                </Typography>
+                                            </td>
 
+                                            <td className={classes}>
+                                                <Typography variant="small" className="font-normal">
+                                                    {metric.editions}
+                                                </Typography>
+                                            </td>
+
+                                            <td className={classes}>
+                                                <Typography variant="small" className="font-normal">
+                                                    {dayjs(metric.timeOfScreenshot).format('hh:mm a - MMM DD, YYYY')}
+                                                </Typography>
+                                            </td>
                                         </tr>
                                     );
                                 })}

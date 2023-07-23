@@ -5,7 +5,7 @@ const sortList = ["None", "ASC", "DESC"];
 
 type StringMapEntry = { [key: string]: string }
 
-const fieldSorter = (fields: string[],) => (
+const fieldSorter = (fields: string[]) => (
     a: StringMapEntry,
     b: StringMapEntry
 ) => fields.map((o: string) => {
@@ -31,12 +31,29 @@ class MetricStore {
         timeOfScreenshot: "None"
     };
 
+    showModal: boolean = false;
+    currentMetric: Metric = {
+        name: "",
+        description: "",
+        editions: "",
+        timeOfScreenshot: "",
+        allScreenshots: "[]"
+    };
+
     constructor() {
         makeAutoObservable(this);
     }
 
     getSortingCriteria() {
         return Object.keys(this.sorting).filter((key: string) => this.sorting[key] !== "None");
+    }
+
+    setShowModal(value: boolean) {
+        this.showModal = value;
+    }
+
+    setCurrentMetric(value: Metric) {
+        this.currentMetric = value;
     }
 
     setAllMetrics(metrics: Metric[]) {

@@ -5,6 +5,7 @@ import store from "store/metricStore";
 import { useEffect } from "react";
 import { fetchMetrics } from "apis/metricApi";
 import MetricTable from "./table/MetricTable";
+import MetricModal from "./modal/MetricModal";
 
 function App() {
   useEffect(() => {
@@ -16,6 +17,7 @@ function App() {
   return (
     <div className="app">
       <MetricTable />
+      <MetricModal />
     </div>
   );
 }

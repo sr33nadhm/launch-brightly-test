@@ -16,7 +16,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: rgba(0, 0, 0, 0.03);
+  background-color: rgba(0, 0, 0, 0.1);
   padding: 25px 0;
 }
 
@@ -24,8 +24,6 @@ body {
   max-width: 90vw;
   margin: 0 auto;
 }
-
-
 
 @media screen and (min-width : 980px) {
   .description-col {

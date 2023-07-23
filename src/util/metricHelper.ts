@@ -16,7 +16,18 @@ export const metricResponseToModel = async (apiResponse: MetricDTO): Promise<Met
             editions: response.FeatureEditions.items.map((item: Edition) => item.edition.name)[0],
             timeOfScreenshot: response.screenshots.items
                 .filter((item: Screenshot) => item.status === "completed")
-                .map((item: Screenshot) => item.timeOfCapture)[0]
+                .map((item: Screenshot) => item.timeOfCapture)[0],
+            allScreenshots: JSON.stringify(response.screenshots.items)
         } as Metric;
     })
+}
+
+export const screenshotModeMapping: { [key: string]: string } = {
+    modeDesktopLight: "Desktop Light Mode",
+    modeMobileLight: "Mobile Light Mode",
+    modeLaptopLight: "Laptop Light Mode",
+    modeLaptopDark: "Laptop Dark Mode",
+    modeImport: "Import Mode",
+    modeMobileDark: "Mobile Dark Mode",
+    modeDesktopDark: "Desktop Dark Mode"
 }

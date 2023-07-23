@@ -43,7 +43,7 @@ function MetricTable() {
                             Metrics Dashboard
                         </Typography>
                         <Typography className="my-1 font-light text-gray-900/50 text-sm">
-                            Here are the metrics captured for the past 30 days. You can always change the retention period in your settings.
+                            Here are the metrics captured for the past 30 days. You can always change the retention period in your settings. Click on any row to see details.
                         </Typography>
                     </div>
                 </div>

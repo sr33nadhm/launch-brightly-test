@@ -114,7 +114,7 @@ function MetricTable() {
                                     const classes = isLast ? baseClass : baseClass + " border-b border-blue-gray-50";
                                     return (
                                         <tr className={rowClass} key={index} onClick={() => handleRowClick(metric)}>
-                                            <td className={classes + "name-col"}>
+                                            <td className={classes + " name-col"}>
                                                 <Typography variant="small" className="font-normal">
                                                     {metric.name}
                                                 </Typography>
